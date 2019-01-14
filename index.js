@@ -68,9 +68,10 @@ and ping - to see how much ping you have`);
 
   }
 
-  if(command === "mute")
+  if(command === "mute") {
    if(!message.member.roles.some(r=>["Administrator","Moderator"].includes(r.name)) )
      return message.reply("Sorry, you dont have permissions to use this!");
+
      let muterole = msg.guild.roles.find(`name`, "muted");
          if(!muterole){
              try{
@@ -102,7 +103,7 @@ and ping - to see how much ping you have`);
             message.channel.send(`**${tomute}** can freely write again!`);
         })
     }, ms(mutetime));
-
+}
 
 
   if(command === "ban") {
