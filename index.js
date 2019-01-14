@@ -1,4 +1,5 @@
 const Discord = require("discord.js");
+const ms = require('ms');
 
 const client = new Discord.Client();
 
@@ -6,7 +7,7 @@ const config = require("./config.json");
 
 client.on("ready", () => {
   console.log(`Bot has started, with ${client.users.size} users, in ${client.channels.size} channels of ${client.guilds.size} guilds.`);
-  client.user.setActivity(`I'm in ${client.guilds.size} servers, use +commands to see what can i do`);
+  client.user.setActivity(`I'm in ${client.guilds.size} servers, use +commands`);
 });
 
 client.on("guildCreate", guild => {
@@ -31,7 +32,7 @@ client.on("message", async message => {
 
   if(command === "ping") {
     const m = await message.channel.send("Ping?");
-    m.edit(`Pong! Latency is ${m.createdTimestamp - message.createdTimestamp}ms. API Latency is ${Math.round(client.ping)}ms`);
+    m.edit(`We dont have ball tho. Latency is ${m.createdTimestamp - message.createdTimestamp}ms. API Latency is ${Math.round(client.ping)}ms`);
   }
   if(command === "commands") {
       const m = await message.channel.send("Wait");
@@ -66,6 +67,43 @@ and ping - to see how much ping you have`);
     message.reply(`${member.user.tag} has been kicked because: ${reason}`);
 
   }
+
+  if(command === "mute")
+   if(!message.member.roles.some(r=>["Administrator","Moderator"].includes(r.name)) )
+     return message.reply("Sorry, you dont have permissions to use this!");
+     let muterole = msg.guild.roles.find(`name`, "muted");
+         if(!muterole){
+             try{
+                 muterole = await msg.guild.createRole({
+                     name: "muted",
+                     color: "#404547",
+                     permissions: []
+                 })
+                 msg.guild.channels.forEach(async (channel, id) => {
+                     await channel.overwritePermissions(muterole, {
+                         SEND_MESSAGES: false,
+                         ADD_REACTIONS: false
+                     });
+                 })
+             }catch(e){
+                 console.log(e.stack)
+             }
+         }
+     let mute = message.mentions.members.first();
+     let muteTime = message.content.split(' ').slice(2).join(' ')
+     if(!tomute || !mutetime) return message.reply ("how to use: +mute <@user> <time>")
+     if(message.guild.member.(tomute).hasPermission('MANAGE_MESSAGES')) return message.reply('I cannot mute him, sorry');
+
+     await message.guild.member(tomute).addRole(muterole).then(() => {
+        message.reply(`${tomute.username} is muted for ${ms(ms(mutetime), {long: true})}.`);
+     });
+     setTimeout(function(){
+        message.guild.member(tomute).removeRole(muterole).then(() => {
+            message.channel.send(`**${tomute}** can freely write again!`);
+        })
+    }, ms(mutetime));
+
+
 
   if(command === "ban") {
     if(!message.member.roles.some(r=>["Administrator","Moderator"].includes(r.name)) )
