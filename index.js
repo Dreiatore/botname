@@ -67,7 +67,7 @@ and ping - to see how much ping you have`);
     message.reply(`${member.user.tag} has been kicked because: ${reason}`);
 
   }
-
+ if(command === "mute"  {
   if (!message.member.roles.some(r => ["Administrator", "Moderator"].includes(r.name))) {
     return message.reply("Sorry, you dont have permissions to use this!");
 } else {
@@ -89,10 +89,12 @@ and ping - to see how much ping you have`);
             console.log(e.stack)
         }
     }
+  }
+}
     let mute = message.mentions.members.first();
     let muteTime = message.content.split(' ').slice(2).join(' ')
     if (!mute || !muteTime) return message.reply("how to use: +mute <@user> <time>")
-    if(message.guild.member(tomute).hasPermission('MANAGE_MESSAGES')) return message.reply('I cannot mute him, sorry');
+    if (message.guild.member(mute).hasPermission('MANAGE_MESSAGES')) return message.reply('I cannot mute him, sorry');
 
     await message.guild.member(mute).addRole(muterole).then(() => {
         message.reply(`${mute.user.username} is muted for ${ms(ms(muteTime), {long: true})}.`);
